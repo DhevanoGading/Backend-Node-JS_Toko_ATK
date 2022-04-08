@@ -1,0 +1,13 @@
+'use strict'
+
+const express = require("express")
+const pegawaiController = require('../controllers/pegawai.controller')
+const router = new express.Router()
+
+router.get("/getPegawai", pegawaiController.index)
+router.get("/getIdPegawai/:id", pegawaiController.getId)
+router.post("/addPegawai", pegawaiController.tambah)
+router.delete("/dropPegawai/:idPegawai", pegawaiController.hapus)
+router.put("/updatePegawai/:idPegawai", pegawaiController.ubah)
+
+module.exports = router
