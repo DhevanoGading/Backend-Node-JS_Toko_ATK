@@ -32,6 +32,7 @@ app.get("/halo", (req, res) => {
 
 app.use("/toko", require('./routes/pegawai.route'))
 app.use("/toko", require('./routes/produk.route'))
+app.use("/toko", require('./routes/user.route'))
 
 const port = 8000;
 app.listen(port, () => {
