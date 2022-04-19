@@ -1,6 +1,9 @@
 'use strict'
 
 const db = require('../db')
+const md5 = require('md5')
+const jwt = require('jsonwebtoken')
+const secret = '(*&^%$#@!)'
 
 module.exports = {
     index: (req, res) => {
@@ -28,18 +31,19 @@ module.exports = {
 
         let namaUser = req.body.namaUser
         let alamatUser = req.body.alamatUser
+        let email = req.body.email
+        let password = md5(req.body.password)
 
         if (!namaUser, !alamatUser) {
             res.status(402).json({
                 message: 'Data harus diisi!'
             })
         } else {
-            return db.query(`INSERT INTO user SET?`, { namaUser, alamatUser }, (error, results) => {
+            return db.query(`INSERT INTO user SET?`, { namaUser, alamatUser, email, password }, (error, result) => {
                 if (error) throw (error)
                 res.json({
                     message: "berhasil menambahkan data",
-                    namaUser: namaUser,
-                    alamatUser: alamatUser,
+                    data: result
                 })
             })
         }
@@ -57,9 +61,9 @@ module.exports = {
     },
     ubah: (req, res) => {
         const idUser = req.params.idUser
-        const { namaUser, alamatUser } = req.body
+        const { namaUser, alamatUser, email, password } = req.body
 
-        db.query(`UPDATE user SET ? WHERE idUser = '${idUser}'`, { namaUser, alamatUser }, (error, results) => {
+        db.query(`UPDATE user SET ? WHERE idUser = '${idUser}'`, { namaUser, alamatUser, email, password }, (error, results) => {
             if (error) throw (error)
             res.json({
                 message: "berhasil update data",
@@ -67,4 +71,27 @@ module.exports = {
             })
         })
     },
+    auth: (req, res) => {
+
+        let email = req.body.email
+        let password = md5(req.body.password)
+
+        let sql = `SELECT * FROM user WHERE email = '${email}' AND password = ${password}`
+
+        if (sql) {
+            let payload = JSON.stringify(sql)
+
+            let token = jwt.sign(payload, secret)
+            res.json({
+                logged: true,
+                data: sql,
+                token: token
+            })
+        } else {
+            res.json({
+                logged: false,
+                message: "Invalid email or password"
+            })
+        }
+    }
 }
