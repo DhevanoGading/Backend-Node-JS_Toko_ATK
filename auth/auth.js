@@ -1,25 +1,29 @@
-const jwt = require("jsonwebtoken")
+const { verify } = require("jsonwebtoken")
 const secret = '(*&^%$#@!)'
 
 module.exports = {
     auth: (req, res, next) => {
-        let header = req.header.authorization
-        let token = header && header.split("  ")[1]
+        let token = req.get("authorization")
 
-        if (token == null) {
-            res.status(404).json({
-                message: "Unauthorized"
-            })
-        } else {
-            jwt.verify(token, secret, (error, user) => {
-                if (error) {
-                    res.status(401).json({
-                        message: "Invalid Token"
+        if (token) {
+
+            let wow = token.slice(7)
+
+            verify(wow, secret, (err, decode) => {
+                if (err) {
+                    res.json({
+                        message: "Login first",
+                        err
                     })
                 } else {
-                    console.log(user);
+                    // let user = decode.result
+                    console.log();
                     next()
                 }
+            })
+        } else {
+            res.json({
+                message: "Access denied : unauthorized user"
             })
         }
     }

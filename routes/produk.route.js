@@ -3,7 +3,7 @@
 const express = require('express')
 const produkController = require('../controllers/produk.controller')
 const router = new express.Router()
-const auth = require('../auth/auth')
+const { auth } = require('../auth/auth')
 
 const multer = require("multer")
 const path = require("path")

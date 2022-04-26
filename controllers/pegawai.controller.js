@@ -64,7 +64,10 @@ module.exports = {
     },
     ubah: (req, res) => {
         const idPegawai = req.params.idPegawai
-        const { namaPegawai, alamatPegawai, email, password } = req.body
+        let namaPegawai = req.body.namaPegawai
+        let alamatPegawai = req.body.alamatPegawai
+        let email = req.body.email
+        let password = md5(req.body.password)
 
         db.query(`UPDATE pegawai SET ? WHERE idPegawai = '${idPegawai}'`, { namaPegawai, alamatPegawai, email, password }, (error, results) => {
             if (error) throw (error)
@@ -74,28 +77,33 @@ module.exports = {
             })
         })
     },
-
-    auth: (req, res) => {
+    login: (req, res) => {
 
         let email = req.body.email
         let password = md5(req.body.password)
 
-        let sql = `SELECT * FROM pegawai WHERE email = '${email}' AND password = ${password}`
-
-        if (sql) {
-            let payload = JSON.stringify(sql)
-
-            let token = jwt.sign(payload, secret)
-            res.json({
-                logged: true,
-                data: sql,
-                token: token
+        if (!email || !password) {
+            res.status(402).json({
+                message: 'username and password cannot be empty.'
             })
         } else {
-            res.json({
-                logged: false,
-                message: "Invalid email or password"
-            })
+
+            let sql = `SELECT * FROM pegawai WHERE email = '${email}' AND password = '${password}'`
+
+            if (sql) {
+                let payload = JSON.stringify(sql)
+
+                let token = jwt.sign(payload, secret)
+                res.json({
+                    logged: true,
+                    token: token
+                })
+            } else {
+                res.json({
+                    logged: false,
+                    message: "Invalid email or password"
+                })
+            }
         }
     }
 }
