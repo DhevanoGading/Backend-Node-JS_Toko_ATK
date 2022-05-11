@@ -27,6 +27,23 @@ module.exports = {
             });
         });
     },
+    post: (req, res) => {
+        let find = req.body.find
+        let sql = "select * from pegawai where idPegawai like '%" + find + "%' or namaPegawai like '%" + find + "%' or alamatPegawai like '%" + find + "%'"
+        db.query(sql, (err, results) => {
+            if (err) {
+                throw err
+            } else {
+                let response = {
+                    count: results.length,
+                    pegawai: results
+                }
+
+                res.setHeader("Content-Type", "application/json")
+                res.send(JSON.stringify(response))
+            }
+        })
+    },
     tambah: (req, res) => {
 
         let namaPegawai = req.body.namaPegawai

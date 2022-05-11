@@ -2,11 +2,17 @@
 
 //inisialisasi
 const express = require("express")
+const bodyParser = require("body-parser")
+const cors = require("cors")
 
 //implementasi
 const app = express()
 app.use(express.json())
 
+app.use(express.static(__dirname))
+
+app.use(cors())
+app.use(bodyParser.json())
 app.use(express.urlencoded({
     extended: true
 }))

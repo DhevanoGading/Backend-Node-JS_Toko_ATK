@@ -10,7 +10,7 @@ module.exports = {
             if (error) throw (error)
             res.json({
                 message: "berhasil menampilkan data",
-                results: results
+                produk: results
             })
         })
     },
@@ -24,6 +24,33 @@ module.exports = {
             });
         });
     },
+    getImg: (req, res) => {
+        const id = req.params.id;
+        db.query(`select fotoProduk from produk where idProduk = '${id}'`, (err, results) => {
+            if (err) throw err;
+            res.json({
+                message: "Berhasil Menampilkan Data",
+                data: results,
+            });
+        });
+    },
+    post: (req, res) => {
+        let find = req.body.find
+        let sql = "select * from produk where idProduk like '%" + find + "%' or namaProduk like '%" + find + "%' or deskripsiProduk like '%" + find + "%'"
+        db.query(sql, (err, results) => {
+            if (err) {
+                throw err
+            } else {
+                let response = {
+                    count: results.length,
+                    produk: results
+                }
+
+                res.setHeader("Content-Type", "application/json")
+                res.send(JSON.stringify(response))
+            }
+        })
+    },
     tambah: (req, res) => {
 
         let namaProduk = req.body.namaProduk
@@ -36,14 +63,11 @@ module.exports = {
                 message: 'Data harus diisi!'
             })
         } else {
-            return db.query(`INSERT INTO produk SET?`, { namaProduk, deskripsiProduk, hargaProduk, fotoProduk }, (error, results) => {
+            return db.query(`INSERT INTO produk SET?`, { namaProduk, deskripsiProduk, hargaProduk, fotoProduk }, (error, result) => {
                 if (error) throw (error)
                 res.json({
                     message: "berhasil menambahkan data",
-                    namaProduk: namaProduk,
-                    deskripsiProduk: deskripsiProduk,
-                    hargaProduk: hargaProduk,
-                    fotoProduk: fotoProduk
+                    data: result
                 })
             })
         }
