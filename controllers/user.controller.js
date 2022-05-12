@@ -88,12 +88,15 @@ module.exports = {
             let sql = `SELECT * FROM user WHERE email = '${email}' AND password = '${password}'`
 
             if (sql) {
-                let payload = JSON.stringify(sql)
+                db.query(sql, (error, results) => {
+                    let payload = JSON.stringify(sql)
 
-                let token = jwt.sign(payload, secret)
-                res.json({
-                    logged: true,
-                    token: token
+                    let token = jwt.sign(payload, secret)
+                    res.json({
+                        logged: true,
+                        token: token,
+                        data: results
+                    })
                 })
             } else {
                 res.json({

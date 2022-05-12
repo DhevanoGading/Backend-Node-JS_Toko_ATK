@@ -12,6 +12,6 @@ router.post("/addPegawai", pegawaiController.tambah)
 router.delete("/dropPegawai/:idPegawai", pegawaiController.hapus)
 router.put("/updatePegawai/:idPegawai", pegawaiController.ubah)
 
-// router.post("/loginPegawai", pegawaiController.login)
+router.post("/loginPegawai", pegawaiController.login)
 
 module.exports = router

@@ -37,8 +37,7 @@ module.exports = {
             if (err) throw err;
             res.json({
                 message: "Berhasil menambahkan data",
-                idUser: idUser,
-                tanggalTransaksi: tanggalTransaksi
+                data: results
             });
         });
     },
